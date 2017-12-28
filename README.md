@@ -34,4 +34,5 @@
        curl -X DELETE \
        http://localhost:8080/orders/     
           
-       
+1. CI powered with [Travis](https://travis-ci.org/jugalthakkar/cabs-service). Master [![Build Status](https://travis-ci.org/jugalthakkar/cabs-service.svg?branch=master)](https://travis-ci.org/jugalthakkar/cabs-service)
+    
