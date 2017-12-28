@@ -1,5 +1,5 @@
 1. Run dbscripts.sql on your msql database
-1. Configure src/main/resources/application.properties
+1. Configure src/main/resources/application.properties or set environment variables `DB_URL`, 'DB_USER' and `DB_PASSWORD` appropriately
 
    1. MySQL db details where #1 was run
    1. Provided user should have select/create/update/delete permission on both drivers and orders table
