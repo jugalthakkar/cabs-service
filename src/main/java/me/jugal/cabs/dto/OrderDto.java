@@ -1,6 +1,6 @@
-package me.jugal.loginext.dto;
+package me.jugal.cabs.dto;
 
-import me.jugal.loginext.utils.Position;
+import me.jugal.cabs.utils.Position;
 
 import java.io.Serializable;
 

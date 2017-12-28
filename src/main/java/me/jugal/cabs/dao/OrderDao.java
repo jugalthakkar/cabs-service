@@ -1,47 +1,49 @@
-package me.jugal.loginext.dao;
+package me.jugal.cabs.dao;
 
-import me.jugal.loginext.dto.DriverDto;
-import me.jugal.loginext.dto.OrderDto;
-import me.jugal.loginext.entities.Driver;
-import me.jugal.loginext.entities.Order;
-import me.jugal.loginext.repositories.DriverRepository;
-import me.jugal.loginext.repositories.OrderRepository;
-import me.jugal.loginext.utils.DistanceUtil;
-import me.jugal.loginext.utils.Position;
+import me.jugal.cabs.dto.DriverDto;
+import me.jugal.cabs.dto.OrderDto;
+import me.jugal.cabs.entities.Driver;
+import me.jugal.cabs.entities.Order;
+import me.jugal.cabs.repositories.IDriverRepository;
+import me.jugal.cabs.repositories.IOrderRepository;
+import me.jugal.cabs.utils.DistanceUtil;
+import me.jugal.cabs.utils.Position;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class OrderDao {
+public class OrderDao implements IOrderDao {
 
     @Autowired
-    private OrderRepository orderRepo;
+    private IOrderRepository orderRepo;
 
     @Autowired
-    private DriverRepository driverRepo;
+    private IDriverRepository driverRepo;
 
+    @Override
+    @Transactional
     public OrderDto takeOrder(OrderDto orderDto) {
-        List<Driver> availableDrivers = driverRepo.findByBusyFalse();
+        List<Driver> availableDrivers = driverRepo.findByOrderNull();
         Order order = new Order();
-        order.setActive(true);
         order.setLatitude(orderDto.getPosition().getLatitude());
         order.setLongitude(orderDto.getPosition().getLongitude());
         order.setCustomerName(orderDto.getCustomerName());
+        orderRepo.save(order);
         Driver driver = findBestMatch(orderDto, availableDrivers);
         order.setDriver(driver);
         if (driver != null) {
-            driver.setBusy(true);
+            driver.setOrder(order);
             driverRepo.save(driver);
             orderDto.setDriver(new DriverDto(driver.getId(),
                     driver.getName(),
                     driver.getLatitude(),
                     driver.getLongitude(),
-                    driver.isBusy()));
+                    order.getCustomerName()));
         }
-        orderRepo.save(order);
         orderDto.setId(order.getId());
         return orderDto;
     }
@@ -55,5 +57,11 @@ public class OrderDao {
             return availableDrivers.get(closestDriverIndex);
         }
         return null;
+    }
+
+    @Override
+    public void deleteAll() {
+        driverRepo.freeAllDrivers();
+        orderRepo.deleteAll();
     }
 }

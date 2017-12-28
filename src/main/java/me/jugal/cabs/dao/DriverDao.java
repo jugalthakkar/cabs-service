@@ -1,8 +1,8 @@
-package me.jugal.loginext.dao;
+package me.jugal.cabs.dao;
 
-import me.jugal.loginext.dto.DriverDto;
-import me.jugal.loginext.entities.Driver;
-import me.jugal.loginext.repositories.DriverRepository;
+import me.jugal.cabs.dto.DriverDto;
+import me.jugal.cabs.entities.Driver;
+import me.jugal.cabs.repositories.IDriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,13 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class DriverDao {
+public class DriverDao implements IDriverDao {
 
     @Autowired
-    private DriverRepository driversRepo;
+    private IDriverRepository driverRepo;
 
+    @Override
     public List<DriverDto> getAllDrivers() {
-        return getDriverDTOs(driversRepo.findAll());
+        return getDriverDTOs(driverRepo.findAll());
+    }
+
+    @Override
+    public List<DriverDto> getAllAvailableDrivers() {
+        return getDriverDTOs(driverRepo.findByOrderNull());
     }
 
     private List<DriverDto> getDriverDTOs(Iterable<Driver> driverEntities) {
@@ -27,11 +33,10 @@ public class DriverDao {
                                 driverEntity.getName(),
                                 driverEntity.getLatitude(),
                                 driverEntity.getLongitude(),
-                                driverEntity.isBusy()))
+                                driverEntity.getOrder() != null ? driverEntity.getOrder().getCustomerName() : null))
         );
         return drivers;
     }
-
 
 }
 

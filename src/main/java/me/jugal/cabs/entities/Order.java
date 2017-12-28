@@ -1,4 +1,4 @@
-package me.jugal.loginext.entities;
+package me.jugal.cabs.entities;
 
 
 import javax.persistence.*;
@@ -15,7 +15,6 @@ public class Order implements Serializable {
     private String customerName;
     private float latitude;
     private float longitude;
-    private boolean active;
 
     @OneToOne()
     @JoinColumn(name = "driver_id")
@@ -36,14 +35,6 @@ public class Order implements Serializable {
 
     public void setLongitude(float longitude) {
         this.longitude = longitude;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public int getId() {

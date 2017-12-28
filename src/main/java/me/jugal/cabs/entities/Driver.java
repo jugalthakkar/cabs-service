@@ -1,4 +1,4 @@
-package me.jugal.loginext.entities;
+package me.jugal.cabs.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,10 +16,13 @@ public class Driver implements Serializable {
 
     private float latitude;
     private float longitude;
-    private boolean busy;
 
     @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY)
     private List<Order> orders;
+
+    @OneToOne()
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     public int getId() {
         return id;
@@ -53,11 +56,11 @@ public class Driver implements Serializable {
         this.longitude = longitude;
     }
 
-    public boolean isBusy() {
-        return busy;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setBusy(boolean busy) {
-        this.busy = busy;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }
